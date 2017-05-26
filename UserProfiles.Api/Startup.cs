@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using UserProfile.DataAccess;
+using System.Net;
+using UserProfiles.Api.Migrations;
+using UserProfiles.Api.Security.Middlewares;
+using UserProfiles.Api.Security.Requirements;
 
 namespace UserProfiles.Api
 {
@@ -23,36 +24,38 @@ namespace UserProfiles.Api
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            ConnectionString = Configuration.GetConnectionString("Hub");
         }
 
         public IConfigurationRoot Configuration { get; }
+
+        public static string ConnectionString { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvc();
+            services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Identity"),
+                optionsBuilder => optionsBuilder.MigrationsAssembly("UserProfiles.Api")));
+
             services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<UserProfileContext>();
+                .AddEntityFrameworkStores<IdentityDbContext>()
+                .AddDefaultTokenProviders();
 
-            services.Configure<IdentityOptions>(config =>
+            services.AddAuthorization(options =>
             {
-                config.Cookies.ApplicationCookie.Events =
-                    new CookieAuthenticationEvents
-                    {
-                        OnRedirectToLogin = ctx =>
-                        {
-                            if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
-                            {
-                                ctx.Response.StatusCode = 401;
-                                return Task.FromResult<object>(null);
-                            }
 
-                            ctx.Response.Redirect(ctx.RedirectUri);
-                            return Task.FromResult<object>(null);
-                        }
-                    };
+                options.AddPolicy("RequirePermission",
+                    authBuilder =>
+                    {
+                        authBuilder.AddRequirements(new PermissionRequirement());
+                    });
+
             });
+
+            services.AddMvc();
+            services.RegisterServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,8 +64,28 @@ namespace UserProfiles.Api
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseExceptionHandler(
+                options => {
+                    options.Run(
+                        async context =>
+                        {
+                            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                            context.Response.ContentType = "text/html";
+                            var ex = context.Features.Get<IExceptionHandlerFeature>();
+                            if (ex != null)
+                            {
+                                var err = $"<h1>Error: {ex.Error.Message}</h1>{ex.Error.StackTrace }";
+                                await context.Response.WriteAsync(err).ConfigureAwait(false);
+                            }
+                        });
+                }
+            );
+
+            app.UseMiddleware<AuthMiddleware>();
             app.UseIdentity();
-            app.UseMvc();
+            app.UseMvcWithDefaultRoute();
+
+            IdentitySeedData.Initialize(app.ApplicationServices);
         }
     }
 }
