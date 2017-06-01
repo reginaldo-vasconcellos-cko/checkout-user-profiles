@@ -9,9 +9,9 @@ namespace UserProfiles.Api.Models.Entities
     {
         public int Id { get; set; }
 
-        public int MerchantId { get; set; }
+        public Merchant Merchant { get; set; }
 
-        public int BusinessId { get; set; }
+        public Business Business { get; set; }
 
         public DateTimeOffset TransactionDate { get; set; }
 

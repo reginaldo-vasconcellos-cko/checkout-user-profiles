@@ -1,70 +1,68 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
-using UserProfiles.Api.Models.Entities;
+using Microsoft.AspNetCore.Builder;
+using UserProfiles.Api.Services;
 
 namespace UserProfiles.Api.Security.Middlewares
 {
     public class AuthMiddleware
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<IdentityUser> _loginManager;
-
         private readonly RequestDelegate _nextDelegate;
-
-        private const string PASSWORD = "Admin123$";
+        private readonly IUserService _userService;
 
         private Dictionary<string, string> _apiKeys = new Dictionary<string, string>()
         {
-            {"admin", "admin@checkout.com"},
+            {"super_admin", "admin@checkout.com"},
+            {"nike_admin", "admin@nike.com"},
+            {"adidas_admin", "admin@adidas.com"},
+            {"nike_shoes_user", "user-shoes@nike.com"},
+            {"nike_accessories_user", "user-accessories@nike.com"},
             {"adidas_user", "user@adidas.com"},
-            {"adidas_am", "account.manager1@adidas.com"}
+            {"sales_user", "sales@checkout.com"}
         };
 
-        public AuthMiddleware(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, RequestDelegate nextDelegate, SignInManager<IdentityUser> loginManager)
+        public AuthMiddleware(RequestDelegate nextDelegate, 
+            IUserService userService)
         {
             _nextDelegate = nextDelegate;
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _loginManager = loginManager;
+            _userService = userService;
         }
 
-        public async Task<Task> Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context)
         {
             StringValues key;
-            string user;
+            string userName;
+
             if (!context.Request.Headers.TryGetValue("Authorization", out key)
-                || !_apiKeys.TryGetValue(key.ToString(), out user))
+                || !_apiKeys.TryGetValue(key.ToString(), out userName))
             {
                 context.Response.StatusCode = 401;
-                return Task.CompletedTask;
+                return;
             }
 
-            var userIdentity = await _userManager.FindByNameAsync(user);
-            var roleNames = await _userManager.GetRolesAsync(userIdentity);
-
-            var roles = new List<IdentityRole>();
-
-            foreach (var roleName in roleNames)
-                roles.Add(await _roleManager.FindByNameAsync(roleName));
-
-            var claims = new List<Claim>{new Claim(ClaimTypes.Name, user)};
-
-            foreach (var role in roles)
-                claims.AddRange(await _roleManager.GetClaimsAsync(role));
+            var claims = await _userService.GetClaimsByUserNameAsync(userName);
 
             context.User = new ClaimsPrincipal(
                 new ClaimsIdentity(claims)
             );
 
-            return _nextDelegate.Invoke(context);
+            await _nextDelegate.Invoke(context);
         }
     }
+
+    #region ExtensionMethod
+
+    public static class AuthHelperExtension
+    {
+        public static IApplicationBuilder UseAuthMiddleware(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<AuthMiddleware>();
+            return app;
+        }
+    }
+
+    #endregion
 }
