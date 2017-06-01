@@ -81,7 +81,7 @@ namespace UserProfiles.Api
                 }
             );
 
-            app.UseMiddleware<AuthMiddleware>();
+            app.UseAuthMiddleware();
             app.UseIdentity();
             app.UseMvcWithDefaultRoute();
 

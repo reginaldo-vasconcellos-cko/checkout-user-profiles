@@ -10,6 +10,6 @@ namespace UserProfiles.Api.Repository
     {
         bool VerifyUserResouceIdentityPermission(VerifyUserResouceIdentityPermissionRequest request);
 
-        void InsertUserResouceIdentity(AssignResourceToUserRequest request);
+        void InsertUserResouceIdentity(int userId, int resourceId);
     }
 }

@@ -10,8 +10,6 @@ namespace UserProfiles.Api.Models.Requests
     {
         public int UserId { get; set; }
 
-        public int IdentityType { get; set; }
-
-        public int IdentityId { get; set; }
+        public int[] ResourceIdentityId { get; set; }
     }
 }

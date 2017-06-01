@@ -10,43 +10,42 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using UserProfiles.Api.Models;
+using UserProfiles.Api.Security.Attributes;
+using UserProfiles.Api.Services;
 
 namespace UserProfiles.Api.Controllers.Profile
 {
     [Route("api/[controller]/[action]")]
-    [Authorize(Roles = "Admin")]
     public class RoleController : Controller
     {
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IRoleService _roleService;
 
-        public RoleController(RoleManager<IdentityRole> roleManager)
+        public RoleController(IRoleService roleService)
         {
-            _roleManager = roleManager;
+            _roleService = roleService;
         }
 
         [HttpPost]
+        [RequirePermission("role.create")]
         public async Task<IActionResult> Create([FromBody]CreateRoleRequest request)
         {
-            if (await _roleManager.RoleExistsAsync(request.Role))
+            if (await _roleService.VerifyExistsAsync(request.Role))
             {
                 ModelState.AddModelError("", "Role already exists!");
 
                 return BadRequest(ModelState);
             }
 
-            var role = new IdentityRole { Name = request.Role };
-
-            _roleManager.CreateAsync(role).Wait();
+            await _roleService.CreateAsync(request.Role);
 
             return Ok();
         }
 
         [HttpPost]
+        [RequirePermission("role.assignClaim")]
         public async Task<IActionResult> AssignClaim([FromBody] AssignClaimToRoleRequest request)
         {
-            var role = await _roleManager.FindByNameAsync(request.Role);
-
-            await _roleManager.AddClaimAsync(role, new Claim(request.Claim.Type, request.Claim.Value));
+            await _roleService.AssignClaimAsync(request);
 
             return Ok();
         }

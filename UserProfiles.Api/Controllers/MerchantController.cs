@@ -11,30 +11,30 @@ using UserProfiles.Api.Models.Requests;
 using UserProfiles.Api.Repository;
 using UserProfiles.Api.Security.Attributes;
 using UserProfiles.Api.Security.Requirements;
+using UserProfiles.Api.Services;
 
 namespace UserProfiles.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class MerchantController : Controller
     {
-        private readonly IMerchantRepository _merchantRepository;
+        private readonly IMerchantService _merchantService;
         private readonly IAuthorizationService _authorizationService;
 
-        public MerchantController(IAuthorizationService authorizationService, IMerchantRepository merchantRepository)
+        public MerchantController(IAuthorizationService authorizationService, 
+            IMerchantService merchantService)
         {
-            _merchantRepository = merchantRepository;
             _authorizationService = authorizationService;
+            _merchantService = merchantService;
         }
 
-        // GET api/values
         [HttpGet]
         [RequirePermission("merchant.list")]
         public async Task<IActionResult> Get()
         {
-            return Ok(_merchantRepository.Get());
+            return Ok(_merchantService.Get());
         }
 
-        // GET api/values/5
         [HttpGet("{id}")]
         [RequirePermission("merchant.get")]
         public async Task<IActionResult> Get(int id)
@@ -42,10 +42,9 @@ namespace UserProfiles.Api.Controllers
             if (!await _authorizationService.AuthorizeAsync(User, null, new ResourceAccessRequirement(id, IdentityType.Merchant)))
                 return new ChallengeResult();
 
-            return Ok(_merchantRepository.GetById(id));
+            return Ok(_merchantService.GetById(id));
         }
 
-        // GET api/values/5
         [HttpPut]
         [RequirePermission("merchant.update")]
         public async Task<IActionResult> Update([FromBody]UpdateAccountRequest request)
@@ -53,7 +52,7 @@ namespace UserProfiles.Api.Controllers
             if (!await _authorizationService.AuthorizeAsync(User, null, new ResourceAccessRequirement(request.Id, IdentityType.Merchant)))
                 return new ChallengeResult();
 
-            _merchantRepository.Update(request);
+            _merchantService.Update(request);
 
             return NoContent();
         }

@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System;
+using Dapper;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -19,15 +20,26 @@ namespace UserProfiles.Api.Repository
         {
             using (IDbConnection dbConnection = Connection)
             {
-                string sQuery = @"select a.Id, MerchantId, BusinessId, TransactionDate, Amount, Currency
+                string sQuery = @"select a.Id, TransactionDate, Amount, Currency, a.MerchantId as [Id], f.[Name], BusinessId as [Id], g.[Name]
                                 from [dbo].[Transaction] a
                                 inner join [dbo].[ResourceIdentity] d on d.IdentityType = 2 and a.BusinessId = d.IdentityId
                                 inner join [dbo].[UserResourceIdentity] e on e.ResourceIdentityId = d.Id
+								inner join [dbo].[Merchant] f on f.Id = a.MerchantId
+								inner join [dbo].[Business] g on g.Id = a.BusinessId
                                 where userId = @UserId";
 
                 dbConnection.Open();
 
-                var result = dbConnection.Query<Transaction>(sQuery, new { UserId = userId }).ToList();
+                var result = dbConnection
+                    .Query<Transaction, Merchant, Business, Transaction>(sQuery,
+                        (transaction, merchant, business) =>
+                        {
+                            transaction.Merchant = merchant;
+                            business.MerchantId = merchant.Id;
+                            transaction.Business = business;
+
+                            return transaction;
+                        }, new { UserId = userId }).ToList();
 
                 return result;
             }
@@ -37,15 +49,26 @@ namespace UserProfiles.Api.Repository
         {
             using (IDbConnection dbConnection = Connection)
             {
-                string sQuery = @"select a.Id, MerchantId, BusinessId, TransactionDate, Amount, Currency
+                string sQuery = @"select a.Id, TransactionDate, Amount, Currency, a.MerchantId as [Id], f.[Name], BusinessId as [Id], g.[Name]
                                 from [dbo].[Transaction] a
                                 inner join [dbo].[ResourceIdentity] d on d.IdentityType = 2 and a.BusinessId = d.IdentityId
                                 inner join [dbo].[UserResourceIdentity] e on e.ResourceIdentityId = d.Id
+								inner join [dbo].[Merchant] f on f.Id = a.MerchantId
+								inner join [dbo].[Business] g on g.Id = a.BusinessId
                                 where a.MerchantId = @MerchantId and userId = @UserId";
 
                 dbConnection.Open();
 
-                var result = dbConnection.Query<Transaction>(sQuery, new { MerchantId = merchantId, UserId = userId }).ToList();
+                var result = dbConnection
+                    .Query<Transaction, Merchant, Business, Transaction>(sQuery,
+                        (transaction, merchant, business) =>
+                        {
+                            transaction.Merchant = merchant;
+                            business.MerchantId = merchant.Id;
+                            transaction.Business = business;
+
+                            return transaction;
+                        }, new { MerchantId = merchantId, UserId = userId }).ToList();
 
                 return result;
             }
@@ -55,11 +78,24 @@ namespace UserProfiles.Api.Repository
         {
             using (IDbConnection dbConnection = Connection)
             {
-                string sQuery = @"select Id, MerchantId, BusinessId, TransactionDate, Amount, Currency from [dbo].[Transaction] where BusinessId = @Id";
+                string sQuery = @"select a.Id, TransactionDate, Amount, Currency, a.MerchantId as [Id], f.[Name], BusinessId as [Id], g.[Name]
+                                from [dbo].[Transaction] a
+								inner join [dbo].[Merchant] f on f.Id = a.MerchantId
+								inner join [dbo].[Business] g on g.Id = a.BusinessId
+                                where BusinessId = @BusinessId";
 
                 dbConnection.Open();
 
-                var result = dbConnection.Query<Transaction>(sQuery, new { Id = id }).ToList();
+                var result = dbConnection
+                    .Query<Transaction, Merchant, Business, Transaction>(sQuery,
+                        (transaction, merchant, business) =>
+                        {
+                            transaction.Merchant = merchant;
+                            business.MerchantId = merchant.Id;
+                            transaction.Business = business;
+
+                            return transaction;
+                        }, new { BusinessId = id}).ToList();
 
                 return result;
             }

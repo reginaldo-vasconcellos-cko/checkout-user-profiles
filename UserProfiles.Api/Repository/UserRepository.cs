@@ -37,6 +37,26 @@ namespace UserProfiles.Api.Repository
             
         }
 
+        public void Update(User user)
+        {
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    string sQuery = "UPDATE [dbo].[User] set GuidRef = @GuidRef " +
+                                    "where Id = @Id";
+
+                    dbConnection.Open();
+                    dbConnection.Execute(sQuery, user);
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+        }
+
         public GetUserPermissionsResponse GetById(int id)
         {
             using (IDbConnection dbConnection = Connection)

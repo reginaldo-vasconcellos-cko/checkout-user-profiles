@@ -15,15 +15,5 @@ namespace UserProfiles.Api.Models.Responses
         public List<Role> Roles { get; set; }
 
         public List<ClaimBase> Claims { get; set; }
-
-        //public string RoleName { get; set; }
-
-        //public string RoleClaimType { get; set; }
-
-        //public string RoleClaimValue { get; set; }
-
-        //public string UserClaimType { get; set; }
-
-        //public string UserClaimValue { get; set; }
     }
 }

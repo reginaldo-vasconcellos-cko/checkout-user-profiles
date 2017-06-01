@@ -7,6 +7,8 @@ namespace UserProfiles.Api.Repository
     {
         void Add(User user);
 
+        void Update(User user);
+
         GetUserPermissionsResponse GetById(int id);
 
         User GetByRefId(string id);

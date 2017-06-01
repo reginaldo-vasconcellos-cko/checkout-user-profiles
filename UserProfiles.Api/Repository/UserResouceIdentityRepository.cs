@@ -40,7 +40,7 @@ namespace UserProfiles.Api.Repository
             }
         }
 
-        public async void InsertUserResouceIdentity(AssignResourceToUserRequest request)
+        public void InsertUserResouceIdentity(int userId, int resourceId)
         {
             try
             {
@@ -48,8 +48,8 @@ namespace UserProfiles.Api.Repository
                 {
                     dbConnection.Open();
 
-                    await dbConnection.ExecuteAsync("InsertUserResouceIdentity",
-                        new { UserId = request.UserId, IdentityType = request.IdentityType, IdentityId = request.IdentityId },
+                    dbConnection.Execute("InsertUserResouceIdentity",
+                        new { UserId = userId, ResourceIdentityId = resourceId },
                         commandType: CommandType.StoredProcedure);
                 }
             }

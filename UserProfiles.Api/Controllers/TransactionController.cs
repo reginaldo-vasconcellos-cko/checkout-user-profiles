@@ -1,38 +1,27 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using UserProfiles.Api.Models.Enums;
-using UserProfiles.Api.Repository;
 using UserProfiles.Api.Security.Attributes;
 using UserProfiles.Api.Security.Requirements;
+using UserProfiles.Api.Services;
 
 namespace UserProfiles.Api.Controllers
 {
     [Produces("application/json")]
     public class TransactionController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
         private readonly IAuthorizationService _authorizationService;
-        private readonly ITransactionRepository _transactionRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly ITransactionService _transactionService;
+        private readonly IUserService _userService;
 
-        public int UserId => _userRepository.GetByRefId(_userManager.FindByNameAsync(User.Identity.Name).Result.Id).Id;
-
-        public TransactionController(UserManager<IdentityUser> userManager,
-                IAuthorizationService authorizationService, 
-                ITransactionRepository transactionRepository, 
-                IUserRepository userRepository)
+        public TransactionController(IAuthorizationService authorizationService, 
+                ITransactionService transactionService, 
+                IUserService userService)
         {
-            _userManager = userManager;
             _authorizationService = authorizationService;
-            _transactionRepository = transactionRepository;
-            _userRepository = userRepository;
+            _transactionService = transactionService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -40,7 +29,9 @@ namespace UserProfiles.Api.Controllers
         [Route("api/transactions")]
         public async Task<IActionResult> Get()
         {
-            return Ok(_transactionRepository.Get(UserId));
+            var user = await _userService.GetByNameAsync(User.Identity.Name);
+
+            return Ok(_transactionService.Get(user.Id));
         }
 
         [HttpGet]
@@ -51,9 +42,9 @@ namespace UserProfiles.Api.Controllers
             if (!await _authorizationService.AuthorizeAsync(User, null, new ResourceAccessRequirement(id, IdentityType.Merchant)))
                 return new ChallengeResult();
 
-            var result = _transactionRepository.GetByMerchantId(id, UserId);
+            var user = await _userService.GetByNameAsync(User.Identity.Name);
 
-            return Ok(result);
+            return Ok(_transactionService.GetByMerchantId(id, user.Id));
         }
 
         [HttpGet]
@@ -64,7 +55,7 @@ namespace UserProfiles.Api.Controllers
             if (!await _authorizationService.AuthorizeAsync(User, null, new ResourceAccessRequirement(id, IdentityType.Business)))
                 return new ChallengeResult();
 
-            return Ok(_transactionRepository.GetByBusinessId(id));
+            return Ok(_transactionService.GetByBusinessId(id));
         }
     }
 }

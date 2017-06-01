@@ -10,6 +10,6 @@ namespace UserProfiles.Api.Models
     {
         public string Role { get; set; }
 
-        public ClaimBase Claim { get; set; }
+        public ClaimBase[] Claims { get; set; }
     }
 }

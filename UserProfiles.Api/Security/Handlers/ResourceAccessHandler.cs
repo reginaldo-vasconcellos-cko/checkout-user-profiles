@@ -26,9 +26,9 @@ namespace UserProfiles.Api.Security.Handlers
             _userManager = userManager;
         }
 
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ResourceAccessRequirement requirement)
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ResourceAccessRequirement requirement)
         {
-            var userIdendity = _userManager.FindByNameAsync(context.User.Identity.Name).Result;
+            var userIdendity = await _userManager.FindByNameAsync(context.User.Identity.Name);
             var user = _userRepository.GetByRefId(userIdendity.Id);
 
             var resourcePermission = new VerifyUserResouceIdentityPermissionRequest
@@ -40,8 +40,6 @@ namespace UserProfiles.Api.Security.Handlers
 
             if (_userResouceIdentityRepository.VerifyUserResouceIdentityPermission(resourcePermission))
                 context.Succeed(requirement);
-
-            return Task.CompletedTask;
         }
     }
 }
