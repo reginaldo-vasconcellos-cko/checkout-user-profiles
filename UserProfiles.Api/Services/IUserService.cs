@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using UserProfiles.Api.Models;
 using UserProfiles.Api.Models.Entities;
 using UserProfiles.Api.Models.Requests;
+using UserProfiles.Api.Models.Responses;
 
 namespace UserProfiles.Api.Services
 {
@@ -20,5 +21,7 @@ namespace UserProfiles.Api.Services
         void AssignResource(AssignResourceToUserRequest request);
 
         Task<User> GetByNameAsync(string name);
+
+        Task<GetUserPermissionsResponse> GetByIdAsync(int id);
     }
 }

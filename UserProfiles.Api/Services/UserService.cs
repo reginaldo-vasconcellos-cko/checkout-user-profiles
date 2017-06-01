@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using UserProfiles.Api.Models;
 using UserProfiles.Api.Models.Entities;
 using UserProfiles.Api.Models.Requests;
+using UserProfiles.Api.Models.Responses;
 using UserProfiles.Api.Repository;
 
 namespace UserProfiles.Api.Services
@@ -117,6 +118,11 @@ namespace UserProfiles.Api.Services
             var user = await _userManager.FindByNameAsync(name);
 
             return _userRepository.GetByRefId(user.Id);
+        }
+
+        public async Task<GetUserPermissionsResponse> GetByIdAsync(int id)
+        {
+            return await _userRepository.GetByIdAsync(id);
         }
     }
 }

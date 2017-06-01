@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using UserProfiles.Api.Models.Entities;
 using UserProfiles.Api.Models.Responses;
 
@@ -57,7 +58,7 @@ namespace UserProfiles.Api.Repository
 
         }
 
-        public GetUserPermissionsResponse GetById(int id)
+        public async Task<GetUserPermissionsResponse> GetByIdAsync(int id)
         {
             using (IDbConnection dbConnection = Connection)
             {
@@ -75,8 +76,8 @@ namespace UserProfiles.Api.Repository
 
                 var lookup = new Dictionary<int, GetUserPermissionsResponse>();
 
-                dbConnection
-                    .Query<GetUserPermissionsResponse, Role, ClaimBase, GetUserPermissionsResponse>(sQuery,
+                var result = await dbConnection
+                    .QueryAsync<GetUserPermissionsResponse, Role, ClaimBase, GetUserPermissionsResponse>(sQuery,
                         (user, role, claim) =>
                         {
                             GetUserPermissionsResponse response;
@@ -97,7 +98,7 @@ namespace UserProfiles.Api.Repository
                                 response.Claims.Add(claim);
 
                             return response;
-                        }, splitOn: "Name,Type").AsQueryable();
+                        }, splitOn: "Name,Type");
 
                 return lookup.Values.FirstOrDefault();
             }

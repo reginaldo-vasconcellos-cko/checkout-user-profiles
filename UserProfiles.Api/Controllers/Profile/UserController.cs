@@ -78,11 +78,11 @@ namespace UserProfiles.Api.Controllers.Profile
             return Ok();
         }
 
-        //[HttpGet("{id}")]
-        //[RequirePermission("user.get")]
-        //public async Task<IActionResult> Get(int id)
-        //{
-        //    return Ok(_userRepository.GetById(id));
-        //}
+        [HttpGet("{id}")]
+        [RequirePermission("user.get")]
+        public async Task<IActionResult> Get(int id)
+        {
+            return Ok(await _userService.GetByIdAsync(id));
+        }
     }
 }

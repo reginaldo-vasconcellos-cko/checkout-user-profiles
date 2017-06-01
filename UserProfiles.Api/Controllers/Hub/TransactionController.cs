@@ -1,12 +1,12 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using UserProfiles.Api.Models.Enums;
 using UserProfiles.Api.Security.Attributes;
 using UserProfiles.Api.Security.Requirements;
 using UserProfiles.Api.Services;
 
-namespace UserProfiles.Api.Controllers
+namespace UserProfiles.Api.Controllers.Hub
 {
     [Produces("application/json")]
     public class TransactionController : Controller
