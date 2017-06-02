@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UserProfiles.Api.Models.Entities;
 using UserProfiles.Api.Models.Responses;
 
@@ -10,8 +11,10 @@ namespace UserProfiles.Api.Repository
 
         void Update(User user);
 
-        Task<GetUserPermissionsResponse> GetByIdAsync(int id);
+        Task<List<GetUserPermissionsResponse>> GetDetailsByIdAsync(int? id = null);
 
         User GetByRefId(string id);
+
+        Task<User> GetByIdAsync(int id);
     }
 }

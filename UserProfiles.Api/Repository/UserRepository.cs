@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using UserProfiles.Api.Helpers;
 using UserProfiles.Api.Models.Entities;
 using UserProfiles.Api.Models.Responses;
 
@@ -35,7 +36,7 @@ namespace UserProfiles.Api.Repository
             {
                 throw e;
             }
-            
+
         }
 
         public void Update(User user)
@@ -58,26 +59,28 @@ namespace UserProfiles.Api.Repository
 
         }
 
-        public async Task<GetUserPermissionsResponse> GetByIdAsync(int id)
+        public async Task<List<GetUserPermissionsResponse>> GetDetailsByIdAsync(int? id = null)
         {
             using (IDbConnection dbConnection = Connection)
             {
-                string sQuery = @"select u.Id, a.UserName, " //User
-                                + "c.[Name], d.ClaimType, d.ClaimValue, " //Role
-                                + "e.ClaimType as Type, e.ClaimValue as Value " //Claim
-                                + "from [Hub].[dbo].[User] u inner join [Hub.Identity].[dbo].[AspNetUsers] a on u.GuidRef = a.Id collate SQL_Latin1_General_CP1_CI_AS "
-                                + "left join[Hub.Identity].[dbo].[AspNetUserRoles] b on a.id = b.UserId "
-                                + "left join[Hub.Identity].[dbo].[AspNetRoles] c on b.RoleId = c.Id "
-                                + "left join[Hub.Identity].[dbo].[AspNetRoleClaims] d on c.Id = d.RoleId "
-                                + "left join[Hub.Identity].[dbo].[AspNetUserClaims] e on a.id = e.UserId"
-                                + " WHERE u.Id = " +  id;
+                string sQuery = @"select u.Id, a.UserName, 
+                                c.[Name], d.ClaimType, d.ClaimValue, 
+                                e.ClaimType as Type, e.ClaimValue as Value 
+                                from [Hub].[dbo].[User] u inner join [Hub.Identity].[dbo].[AspNetUsers] a on u.GuidRef = a.Id collate SQL_Latin1_General_CP1_CI_AS 
+                                left join[Hub.Identity].[dbo].[AspNetUserRoles] b on a.id = b.UserId 
+                                left join[Hub.Identity].[dbo].[AspNetRoles] c on b.RoleId = c.Id 
+                                left join[Hub.Identity].[dbo].[AspNetRoleClaims] d on c.Id = d.RoleId 
+                                left join[Hub.Identity].[dbo].[AspNetUserClaims] e on a.id = e.UserId ";
+
+                if (id.HasValue)
+                    sQuery += "where u.Id = " + id;
 
                 dbConnection.Open();
 
                 var lookup = new Dictionary<int, GetUserPermissionsResponse>();
 
-                var result = await dbConnection
-                    .QueryAsync<GetUserPermissionsResponse, Role, ClaimBase, GetUserPermissionsResponse>(sQuery,
+                await dbConnection
+                    .QueryAsync<GetUserPermissionsResponse, RoleBase, ClaimBase, GetUserPermissionsResponse>(sQuery,
                         (user, role, claim) =>
                         {
                             GetUserPermissionsResponse response;
@@ -88,19 +91,64 @@ namespace UserProfiles.Api.Repository
                             if (response.Roles == null)
                                 response.Roles = new List<Role>();
 
-                            if(!response.Roles.Contains(role))
-                                response.Roles.Add(role);
+                            if (!response.Roles.Any(c => c.Name.Equals(role.Name)))
+                                response.Roles.Add(new Role { Name = role.Name, Claims = new List<ClaimBase> { new ClaimBase { Type = role.ClaimType, Value = role.ClaimValue } } });
+                            else
+                            {
+                                var editRole = response.Roles.Find(c => c.Name.Equals(role.Name));
 
-                            if(response.Claims == null)
-                                response.Claims = new List<ClaimBase>();
+                                if (!editRole.Claims.Any(c => c.Type.Equals(role.ClaimType) && c.Value.Equals(role.ClaimValue)))
+                                {
+                                    editRole.Claims.Add(new ClaimBase
+                                    {
+                                        Type = role.ClaimType,
+                                        Value = role.ClaimValue
+                                    });
+                                }
+                            }
 
-                            if (!response.Claims.Contains(claim))
-                                response.Claims.Add(claim);
+                            if (claim != null)
+                            {
+                                if (response.Claims == null)
+                                    response.Claims = new List<ClaimBase>();
+
+                                if (!response.Claims.Any(c => c.Type.Equals(claim.Type) && c.Value.Equals(claim.Value)))
+                                    response.Claims.Add(claim);
+                            }
 
                             return response;
                         }, splitOn: "Name,Type");
 
-                return lookup.Values.FirstOrDefault();
+                var userDetailsList = lookup.Values.ToList();
+
+                string sResourceAccessQuery = @"select u.Id, g.Id,
+		                    case IdentityType when 1 then 'Merchant' else 'Business' end as [Type],
+		                    isnull(h.Name, i.Name) as Name
+                            from [Hub].[dbo].[User] u
+                            inner join [Hub.Identity].[dbo].[AspNetUsers] a on u.GuidRef = a.Id collate SQL_Latin1_General_CP1_CI_AS
+                            inner join [Hub].[dbo].[UserResourceIdentity] f on u.Id = f.UserId
+                            inner join [Hub].[dbo].[ResourceIdentity] g on f.ResourceIdentityId = g.Id
+                            left join [Hub].[dbo].[Merchant] h on g.IdentityType = 1 and h.Id = g.IdentityId
+                            left join [Hub].[dbo].[Business] i on g.IdentityType = 2 and i.Id = g.IdentityId ";
+
+                if (id.HasValue)
+                    sResourceAccessQuery += "where u.Id = " + id;
+
+                await dbConnection
+                    .QueryAsync<int, ResourceIdentity, ResourceIdentity>(sResourceAccessQuery,
+                        (userId, access) =>
+                        {
+                            var userDetails = userDetailsList.Find(c => c.Id == userId);
+
+                            if (userDetails.ResourceAccesses == null)
+                                userDetails.ResourceAccesses = new List<ResourceIdentity>();
+
+                            userDetails.ResourceAccesses.Add(access);
+
+                            return access;
+                        });
+
+                return userDetailsList;
             }
         }
 
@@ -113,9 +161,23 @@ namespace UserProfiles.Api.Repository
 
                 dbConnection.Open();
 
-                var result = dbConnection.Query<User>(sQuery, new { Id = id}).FirstOrDefault();
+                var result = dbConnection.Query<User>(sQuery, new { Id = id }).FirstOrDefault();
 
                 return result;
+            }
+        }
+
+        public async Task<User> GetByIdAsync(int id)
+        {
+            using (IDbConnection dbConnection = Connection)
+            {
+                string sQuery = @"select Id, GuidRef from [Hub].[dbo].[User] where Id = @Id";
+
+                dbConnection.Open();
+
+                var result = await dbConnection.QueryAsync<User>(sQuery, new { Id = id });
+
+                return result.FirstOrDefault();
             }
         }
     }

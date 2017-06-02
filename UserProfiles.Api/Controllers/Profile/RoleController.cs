@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using UserProfiles.Api.Models;
+using UserProfiles.Api.Models.Requests;
 using UserProfiles.Api.Security.Attributes;
 using UserProfiles.Api.Services;
 
@@ -39,6 +40,13 @@ namespace UserProfiles.Api.Controllers.Profile
             await _roleService.CreateAsync(request.Role);
 
             return Ok();
+        }
+
+        [HttpGet]
+        [RequirePermission("role.get")]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _roleService.GetAsync());
         }
 
         [HttpPost]

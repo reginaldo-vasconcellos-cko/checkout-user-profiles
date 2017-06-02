@@ -10,9 +10,7 @@ namespace UserProfiles.Api.Services
 {
     public interface IUserService
     {
-        Task RegisterAsync(RegisterAccountRequest request);
-
-        Task<List<Claim>> GetClaimsByUserNameAsync(string userName);
+        Task CreateAsync(CreateAccountRequest request);
 
         Task AssignClaimAsync(AssignClaimToUserRequest request);
 
@@ -22,6 +20,14 @@ namespace UserProfiles.Api.Services
 
         Task<User> GetByNameAsync(string name);
 
-        Task<GetUserPermissionsResponse> GetByIdAsync(int id);
+        Task<GetUserPermissionsResponse> GetDetailsByIdAsync(int id);
+
+        Task<List<GetUserPermissionsResponse>> GetDetailsAsync();
+
+        Task<List<Claim>> GetClaimsByUserNameAsync(string userName);
+
+        Task<List<ClaimBase>> GetClaimsByIdAsync(int id);
+
+        Task<IList<string>> GetRolesByIdAsync(int id);
     }
 }

@@ -26,11 +26,14 @@ namespace UserProfiles.Api
             Configuration = builder.Build();
 
             ConnectionString = Configuration.GetConnectionString("Hub");
+            IdentityConnectionString = Configuration.GetConnectionString("Identity");
         }
 
         public IConfigurationRoot Configuration { get; }
 
         public static string ConnectionString { get; private set; }
+
+        public static string IdentityConnectionString { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)

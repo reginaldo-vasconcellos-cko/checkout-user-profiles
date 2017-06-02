@@ -15,5 +15,7 @@ namespace UserProfiles.Api.Models.Responses
         public List<Role> Roles { get; set; }
 
         public List<ClaimBase> Claims { get; set; }
+
+        public List<ResourceIdentity> ResourceAccesses { get; set; }
     }
 }

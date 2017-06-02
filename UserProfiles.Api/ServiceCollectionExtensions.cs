@@ -15,12 +15,14 @@ namespace UserProfiles.Api
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IRoleService, RoleService>();
             services.AddSingleton<ITransactionService, TransactionService>();
+            services.AddSingleton<IClaimService, ClaimService>();
             services.AddSingleton<IMerchantService, MerchantService>();
 
             //repositories
             services.AddTransient<IMerchantRepository, MerchantRepository>();
             services.AddTransient<ITransactionRepository, TransactionRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IClaimRepository, ClaimRepository>();
             services.AddTransient<IUserResouceIdentityRepository, UserResouceIdentityRepository>();
 
             //others

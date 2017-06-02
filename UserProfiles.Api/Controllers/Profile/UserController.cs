@@ -25,12 +25,12 @@ namespace UserProfiles.Api.Controllers.Profile
         }
 
         [HttpPost]
-        [RequirePermission("user.register")]
-        public async Task<IActionResult> Register([FromBody]RegisterAccountRequest request)
+        [RequirePermission("user.create")]
+        public async Task<IActionResult> Create([FromBody]CreateAccountRequest request)
         {
             try
             {
-                await _userService.RegisterAsync(request);
+                await _userService.CreateAsync(request);
 
                 return Ok();
             }
@@ -39,7 +39,23 @@ namespace UserProfiles.Api.Controllers.Profile
                 Console.WriteLine(e);
                 throw;
             }
+        }
 
+        [HttpPut("{id}")]
+        [RequirePermission("user.edit")]
+        public async Task<IActionResult> Edit(int id, [FromBody]EditAccountRequest request)
+        {
+            try
+            {
+                //await _userService.CreateAsync(request);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         [HttpPost]
@@ -55,15 +71,14 @@ namespace UserProfiles.Api.Controllers.Profile
         [RequirePermission("user.assignRole")]
         public async Task<IActionResult> AssignRole([FromBody] AssignRoleToUserRequest request)
         {
-            var requirements = new List<ResourceAccessRequirement>
-            {
-                new ResourceAccessRequirement(request.UserId, IdentityType.User),
-                new ResourceAccessRequirement(request.RoleId, IdentityType.Role)
-            };
+            //var requirements = new List<ResourceAccessRequirement>
+            //{
+            //    new ResourceAccessRequirement(request.UserId, IdentityType.User),
+            //    new ResourceAccessRequirement(request.RoleId, IdentityType.Role)
+            //};
 
-            if (!await _authorizationService.AuthorizeAsync(User, null, requirements))
-                return new ChallengeResult();
-
+            //if (!await _authorizationService.AuthorizeAsync(User, null, requirements))
+            //    return new ChallengeResult();
             await _userService.AssignRoleAsync(request);
 
             return Ok();
@@ -82,7 +97,14 @@ namespace UserProfiles.Api.Controllers.Profile
         [RequirePermission("user.get")]
         public async Task<IActionResult> Get(int id)
         {
-            return Ok(await _userService.GetByIdAsync(id));
+            return Ok(await _userService.GetDetailsByIdAsync(id));
+        }
+
+        [HttpGet]
+        [RequirePermission("user.list")]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _userService.GetDetailsAsync());
         }
     }
 }

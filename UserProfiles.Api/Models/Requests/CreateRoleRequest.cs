@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace UserProfiles.Api.Models
+﻿namespace UserProfiles.Api.Models.Requests
 {
     public class CreateRoleRequest
     {

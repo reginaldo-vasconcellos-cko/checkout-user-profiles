@@ -21,7 +21,8 @@ namespace UserProfiles.Api.Security.Middlewares
             {"nike_shoes_user", "user-shoes@nike.com"},
             {"nike_accessories_user", "user-accessories@nike.com"},
             {"adidas_user", "user@adidas.com"},
-            {"sales_user", "sales@checkout.com"}
+            {"sales_user", "sales@checkout.com"},
+            {"test_user", "newuserC@checkout.com"}
         };
 
         public AuthMiddleware(RequestDelegate nextDelegate, 
