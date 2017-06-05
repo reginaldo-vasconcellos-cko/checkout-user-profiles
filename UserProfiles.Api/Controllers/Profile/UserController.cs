@@ -47,7 +47,7 @@ namespace UserProfiles.Api.Controllers.Profile
         {
             try
             {
-                //await _userService.CreateAsync(request);
+                await _userService.EditAsync(request);
 
                 return Ok();
             }

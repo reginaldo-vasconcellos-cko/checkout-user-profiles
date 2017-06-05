@@ -27,7 +27,7 @@ namespace UserProfiles.Api.Controllers.Hub
         }
 
         [HttpGet]
-        //[RequirePermission("identity.getRoles")]
+        [RequirePermission("identity.getRoles")]
         [Route("api/identity/{id}/roles")]
         public async Task<IActionResult> GetRoles(int id)
         {

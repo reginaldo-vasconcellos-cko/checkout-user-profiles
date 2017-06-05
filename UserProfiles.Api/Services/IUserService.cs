@@ -12,6 +12,8 @@ namespace UserProfiles.Api.Services
     {
         Task CreateAsync(CreateAccountRequest request);
 
+        Task EditAsync(EditAccountRequest request);
+
         Task AssignClaimAsync(AssignClaimToUserRequest request);
 
         Task AssignRoleAsync(AssignRoleToUserRequest request);

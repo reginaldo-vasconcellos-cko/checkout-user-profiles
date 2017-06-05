@@ -54,7 +54,7 @@ namespace UserProfiles.Api.Services
                 {
                     await request.Roles.ForEachAsync(async role =>
                     {
-                        if(await _roleManager.RoleExistsAsync(role))
+                        if (await _roleManager.RoleExistsAsync(role))
                             await _userManager.AddToRoleAsync(user, role);
                     });
                 }
@@ -74,7 +74,47 @@ namespace UserProfiles.Api.Services
             {
                 throw e;
             }
+        }
 
+        public async Task EditAsync(EditAccountRequest request)
+        {
+            try
+            {
+                var user = await _userManager.FindByNameAsync(request.Email);
+
+                //todo: eidt the user in case of more properties
+
+                if (request.Roles.Any())
+                {
+                    //delete first
+                    await _userManager.RemoveFromRolesAsync(user, request.Roles);
+
+                    await request.Roles.ForEachAsync(async role =>
+                    {
+                        if (await _roleManager.RoleExistsAsync(role))
+                            await _userManager.AddToRoleAsync(user, role);
+                    });
+                }
+
+                if (request.Claims.Any())
+                {
+                    var claims = request.Claims.Select(claim => new Claim("feature", claim));
+
+                    //delete first
+                    await _userManager.RemoveClaimsAsync(user, claims);
+
+                    await request.Claims.ForEachAsync(async claim =>
+                    {
+                        await _userManager.AddClaimAsync(user, new Claim("feature", claim));
+                    });
+                }
+
+                //todo: eidt the user locally in case of more properties
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public async Task AssignClaimAsync(AssignClaimToUserRequest request)
@@ -120,7 +160,7 @@ namespace UserProfiles.Api.Services
 
         public async Task<GetUserPermissionsResponse> GetDetailsByIdAsync(int id)
         {
-            var result =  await _userRepository.GetDetailsByIdAsync(id);
+            var result = await _userRepository.GetDetailsByIdAsync(id);
 
             return result.FirstOrDefault();
         }
@@ -173,7 +213,7 @@ namespace UserProfiles.Api.Services
 
             claims.AddRange(await _userManager.GetClaimsAsync(userIdentity));
 
-            var distinct = claims.GroupBy(c => new {c.Type, c.Value})
+            var distinct = claims.GroupBy(c => new { c.Type, c.Value })
                                  .Select(grp => grp.First())
                                  .ToList();
             return distinct;
