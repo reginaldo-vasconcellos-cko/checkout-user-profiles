@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using UserProfiles.Api.Models.Entities;
+using UserProfiles.Common.Models.Entities;
 
 namespace UserProfiles.Api.Services
 {
@@ -10,6 +8,10 @@ namespace UserProfiles.Api.Services
     {
         Task CreateAsync(ClaimBase claim);
 
+        Task EditAsync(ClaimBase claim);
+
         Task<IEnumerable<ClaimBase>> ListAsync();
+
+        Task<ClaimBase> GetByIdAsync(int id);
     }
 }

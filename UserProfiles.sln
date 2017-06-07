@@ -3,13 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfiles.Api", "UserProfiles.Api\UserProfiles.Api.csproj", "{04C2ED29-3033-48F0-8D6F-9496C588F917}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfiles.WebApi", "UserProfiles.WebApi\UserProfiles.WebApi.csproj", "{04C2ED29-3033-48F0-8D6F-9496C588F917}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "UserProfiles.Database", "UserProfiles.Database\UserProfiles.Database.sqlproj", "{1A286E79-8336-43EC-8E38-B0DE0806A8C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfiles.Web", "UserProfiles.Web\UserProfiles.Web.csproj", "{2D29796F-7E51-41C2-8E5D-1FF398324338}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfiles.Mvc", "UserProfiles.Mvc\UserProfiles.Mvc.csproj", "{2D29796F-7E51-41C2-8E5D-1FF398324338}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfiles.Common", "UserProfiles.Common\UserProfiles.Common.csproj", "{45620F26-5F0B-4BBC-B5B8-97EC6AE0CF8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfiles.Api", "UserProfiles.Api\UserProfiles.Api.csproj", "{3D7F6838-F896-42D9-8F76-2091CED336F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfiles.Data", "UserProfiles.Data\UserProfiles.Data.csproj", "{1993102A-A598-42A2-8A5B-085932B1C411}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProfiles.Security", "UserProfiles.Security\UserProfiles.Security.csproj", "{23267D9E-BDB3-4382-B84C-78E066298508}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +41,18 @@ Global
 		{45620F26-5F0B-4BBC-B5B8-97EC6AE0CF8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45620F26-5F0B-4BBC-B5B8-97EC6AE0CF8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45620F26-5F0B-4BBC-B5B8-97EC6AE0CF8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D7F6838-F896-42D9-8F76-2091CED336F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D7F6838-F896-42D9-8F76-2091CED336F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D7F6838-F896-42D9-8F76-2091CED336F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D7F6838-F896-42D9-8F76-2091CED336F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1993102A-A598-42A2-8A5B-085932B1C411}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1993102A-A598-42A2-8A5B-085932B1C411}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1993102A-A598-42A2-8A5B-085932B1C411}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1993102A-A598-42A2-8A5B-085932B1C411}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23267D9E-BDB3-4382-B84C-78E066298508}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23267D9E-BDB3-4382-B84C-78E066298508}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23267D9E-BDB3-4382-B84C-78E066298508}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23267D9E-BDB3-4382-B84C-78E066298508}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using UserProfiles.Api.Models;
-using UserProfiles.Api.Models.Entities;
+using UserProfiles.Common.Models.Entities;
+using UserProfiles.Common.Models.Requests;
 
 namespace UserProfiles.Api.Services
 {
@@ -10,9 +9,13 @@ namespace UserProfiles.Api.Services
     {
         Task<bool> VerifyExistsAsync(string role);
 
-        Task<List<Role>> GetAsync();
+        Task<List<RoleDto>> GetAsync();
 
         Task CreateAsync(string role);
+
+        Task CreateAsync(RoleDto role);
+
+        Task EditAsync(RoleDto role);
 
         Task AssignClaimAsync(AssignClaimToRoleRequest request);
     }

@@ -88,4 +88,41 @@ insert into [dbo].[Transaction] ([MerchantId], [BusinessId], [TransactionDate], 
 go
 insert into [dbo].[Transaction] ([MerchantId], [BusinessId], [TransactionDate], [Amount], [Currency]) values (2, 4, '2017-03-20 00:00:00', 150, 'EUR');
 
+-- [Claims] --
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'claim.list');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'claim.details');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'claim.create');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'claim.edit');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'role.list');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'role.details');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'role.create');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'role.edit');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'user.list');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'user.details');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'user.create');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'user.edit');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'identity.list');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'identity.getRoles');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'identity.getPermissions');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'transaction.list');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'transaction.getByMerchant');
+go
+insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'transaction.getByBusiness');
 

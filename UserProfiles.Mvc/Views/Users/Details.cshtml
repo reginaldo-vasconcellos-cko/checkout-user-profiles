@@ -1,0 +1,130 @@
+@using System.Linq
+@using Microsoft.Extensions.Localization
+@using UserProfiles.Common.Models.Entities
+@using UserProfiles.Mvc.Models
+@model UserProfiles.Mvc.Models.User
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+    </dl>
+    <div class="form-inline">
+        <div class="form-group">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.SelectedRoles, "Roles")
+            </div>
+
+            <div class="editor-field">
+                <ul>
+                    @foreach (Role role in ViewBag.PossibleRoles)
+            {
+                        <li>
+                            @if (Model.SelectedRoles != null && Model.SelectedRoles.Select(e => e).Any(e => e == role.Name))
+                            {
+                                <input type="checkbox" name="SelectedRoles" value="@role.Name" readonly="readonly" disabled="disabled" checked="checked" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="SelectedRoles" value="@role.Name" readonly="readonly" disabled="disabled" />
+                            }
+                            @role.Name
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.SelectedClaims, "Claims")
+            </div>
+
+            <div class="editor-field">
+                <ul>
+                    @foreach (Claim claim in ViewBag.PossibleClaims)
+            {
+                        <li>
+                            @if (Model.SelectedClaims != null && Model.SelectedClaims.Select(e => e).Any(e => e == claim.Value))
+                            {
+                                <input type="checkbox" name="SelectedClaims" value="@claim.Value" readonly="readonly" disabled="disabled" checked="checked" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="SelectedClaims" value="@claim.Value" readonly="readonly" disabled="disabled" />
+                            }
+                            @claim.Value
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.SelectedResources, "Resources")
+            </div>
+
+            <div class="editor-field">
+                <h7>Merchant</h7>
+                <ul>
+                    @foreach (ResourceIdentity resource in ViewBag.PossibleMerchantResources)
+                    {
+                        <li>
+                            @if (Model.SelectedResources != null && Model.SelectedResources.Select(e => e).Any(e => e == resource.Id))
+                            {
+                                <input type="checkbox" name="SelectedResources" value="@resource.Id" readonly="readonly" disabled="disabled" checked="checked" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="SelectedResources" value="@resource.Id" readonly="readonly" disabled="disabled" />
+                            }
+                            @resource.Name
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="editor-field">
+                <h7>Business</h7>
+                <ul>
+                    @foreach (ResourceIdentity resource in ViewBag.PossibleBusinessResources)
+                    {
+                        <li>
+                            @if (Model.SelectedResources != null && Model.SelectedResources.Select(e => e).Any(e => e == resource.Id))
+                            {
+                                <input type="checkbox" name="SelectedResources" value="@resource.Id" readonly="readonly" disabled="disabled" checked="checked" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="SelectedResources" value="@resource.Id" readonly="readonly" disabled="disabled" />
+                            }
+                            @resource.Name
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

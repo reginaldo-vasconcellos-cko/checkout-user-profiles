@@ -4,13 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
-using UserProfiles.Api.Helpers;
-using UserProfiles.Api.Models;
-using UserProfiles.Api.Models.Entities;
-using UserProfiles.Api.Models.Requests;
-using UserProfiles.Api.Models.Responses;
-using UserProfiles.Api.Repository;
+using UserProfiles.Common.Helpers;
+using UserProfiles.Common.Models.Entities;
+using UserProfiles.Common.Models.Requests;
+using UserProfiles.Common.Models.Responses;
+using UserProfiles.Data.Repository;
 
 namespace UserProfiles.Api.Services
 {
@@ -19,12 +19,12 @@ namespace UserProfiles.Api.Services
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUserRepository _userRepository;
-        private readonly IUserResouceIdentityRepository _userResouceIdentityRepository;
+        private readonly IUserResourceIdentityRepository _userResouceIdentityRepository;
 
         public UserService(UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IUserRepository userRepository,
-            IUserResouceIdentityRepository userResouceIdentityRepository)
+            IUserResourceIdentityRepository userResouceIdentityRepository)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -38,7 +38,7 @@ namespace UserProfiles.Api.Services
             {
                 var newUser = new IdentityUser
                 {
-                    UserName = request.Email,
+                    UserName = request.Name,
                     Email = request.Email
                 };
 
@@ -48,9 +48,9 @@ namespace UserProfiles.Api.Services
                 if (!result.Succeeded)
                     return;
 
-                var user = await _userManager.FindByNameAsync(newUser.Email);
+                var user = await _userManager.FindByNameAsync(newUser.UserName);
 
-                if (request.Roles.Any())
+                if (request.Roles != null)
                 {
                     await request.Roles.ForEachAsync(async role =>
                     {
@@ -59,7 +59,7 @@ namespace UserProfiles.Api.Services
                     });
                 }
 
-                if (request.Claims.Any())
+                if (request.Claims != null)
                 {
                     await request.Claims.ForEachAsync(async claim =>
                     {
@@ -68,7 +68,10 @@ namespace UserProfiles.Api.Services
                 }
 
                 //create the user locally
-                _userRepository.Add(new User { GuidRef = user.Id });
+                var userId = await _userRepository.Add(new User { GuidRef = user.Id });
+
+                if (request.Resources != null)
+                    AssignResource(userId, request.Resources);
             }
             catch (Exception e)
             {
@@ -80,15 +83,14 @@ namespace UserProfiles.Api.Services
         {
             try
             {
-                var user = await _userManager.FindByNameAsync(request.Email);
+                var user = await _userManager.FindByNameAsync(request.Name);
 
-                //todo: eidt the user in case of more properties
+                //delete roles first
+                var roles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, roles);
 
-                if (request.Roles.Any())
+                if (request.Roles != null)
                 {
-                    //delete first
-                    await _userManager.RemoveFromRolesAsync(user, request.Roles);
-
                     await request.Roles.ForEachAsync(async role =>
                     {
                         if (await _roleManager.RoleExistsAsync(role))
@@ -96,20 +98,23 @@ namespace UserProfiles.Api.Services
                     });
                 }
 
-                if (request.Claims.Any())
+                //delete claims first
+                var claims = await _userManager.GetClaimsAsync(user);
+                await _userManager.RemoveClaimsAsync(user, claims);
+
+                if (request.Claims != null)
                 {
-                    var claims = request.Claims.Select(claim => new Claim("feature", claim));
-
-                    //delete first
-                    await _userManager.RemoveClaimsAsync(user, claims);
-
                     await request.Claims.ForEachAsync(async claim =>
                     {
                         await _userManager.AddClaimAsync(user, new Claim("feature", claim));
                     });
                 }
 
-                //todo: eidt the user locally in case of more properties
+                //delete resources first
+                ResetResources(request.Id);
+
+                if (request.Resources != null)
+                    AssignResource(request.Id, request.Resources);
             }
             catch (Exception e)
             {
@@ -143,12 +148,6 @@ namespace UserProfiles.Api.Services
             //}
 
             await _userManager.AddToRoleAsync(user, request.Role);
-        }
-
-        public void AssignResource(AssignResourceToUserRequest request)
-        {
-            foreach (var resourceId in request.ResourceIdentityId)
-                _userResouceIdentityRepository.InsertUserResouceIdentity(request.UserId, resourceId);
         }
 
         public async Task<User> GetByNameAsync(string name)
@@ -197,6 +196,8 @@ namespace UserProfiles.Api.Services
             return await _userManager.GetRolesAsync(userIdentity);
         }
 
+        #region Private Methods
+
         private async Task<List<Claim>> GetClaimsByUserIdentity(IdentityUser userIdentity)
         {
             var roleNames = await _userManager.GetRolesAsync(userIdentity);
@@ -218,5 +219,18 @@ namespace UserProfiles.Api.Services
                                  .ToList();
             return distinct;
         }
+
+        private void AssignResource(int userId, int[] resources)
+        {
+            foreach (var resourceId in resources)
+                _userResouceIdentityRepository.InsertUserResourceIdentity(userId, resourceId);
+        }
+
+        private void ResetResources(int userId)
+        {
+            _userResouceIdentityRepository.ResetUserResources(userId);
+        }
+
+        #endregion Private Methods
     }
 }

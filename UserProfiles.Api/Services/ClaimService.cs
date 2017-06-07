@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using UserProfiles.Api.Models.Entities;
-using UserProfiles.Api.Repository;
+using UserProfiles.Common.Models.Entities;
+using UserProfiles.Data.Repository;
 
 namespace UserProfiles.Api.Services
 {
@@ -21,9 +19,19 @@ namespace UserProfiles.Api.Services
             await _claimRepository.CreateAsync(claim);
         }
 
+        public async Task EditAsync(ClaimBase claim)
+        {
+            await _claimRepository.EditAsync(claim);
+        }
+
         public async Task<IEnumerable<ClaimBase>> ListAsync()
         {
             return await _claimRepository.ListAsync();
+        }
+
+        public async Task<ClaimBase> GetByIdAsync(int id)
+        {
+            return await _claimRepository.GetByIdAsync(id);
         }
     }
 }

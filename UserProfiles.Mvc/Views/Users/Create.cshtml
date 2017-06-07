@@ -1,0 +1,113 @@
+@using System.Linq
+@using UserProfiles.Common.Models.Entities
+@using UserProfiles.Mvc.Models
+@model UserProfiles.Mvc.Models.User
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<form asp-action="Create">
+    <div class="form-horizontal">
+        <h4>User</h4>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Name" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Email" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-inline">
+            <div class="form-group">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.SelectedRoles, "Roles")
+                </div>
+
+                <div class="editor-field">
+                    <ul>
+                        @foreach (Role role in ViewBag.PossibleRoles)
+                        {
+                            <li>
+                                <input type="checkbox" name="SelectedRoles" value="@role.Name" />
+                                @role.Name
+                            </li>
+                        }
+                        @Html.ValidationMessageFor(model => model.SelectedRoles)
+                    </ul>
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.SelectedClaims, "Claims")
+                </div>
+
+                <div class="editor-field">
+                    <ul>
+                        @foreach (Claim claim in ViewBag.PossibleClaims)
+                        {
+                            <li>
+                                <input type="checkbox" name="SelectedClaims" value="@claim.Value" />
+                                @claim.Value
+                            </li>
+                        }
+                        @Html.ValidationMessageFor(model => model.SelectedClaims)
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.SelectedResources, "Resources")
+                </div>
+
+                <div class="editor-field">
+                    <h7>Merchant</h7>
+                    <ul>
+                        @foreach (ResourceIdentity resource in ViewBag.PossibleMerchantResources)
+                        {
+                            <li>
+                                <input type="checkbox" name="SelectedResources" value="@resource.Id"/>
+                                @resource.Name
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="editor-field">
+                    <h7>Business</h7>
+                    <ul>
+                        @foreach (ResourceIdentity resource in ViewBag.PossibleBusinessResources)
+                        {
+                            <li>
+                                <input type="checkbox" name="SelectedResources" value="@resource.Id" />
+                                @resource.Name
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using UserProfiles.Api.Models.Entities;
+using UserProfiles.Common.Models.Entities;
 
 namespace UserProfiles.Api.Services
 {
