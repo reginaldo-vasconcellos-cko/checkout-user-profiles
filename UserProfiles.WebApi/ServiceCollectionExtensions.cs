@@ -13,20 +13,13 @@ namespace UserProfiles.WebApi
         {
             //services
             services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IRoleService, RoleService>();
             services.AddSingleton<ITransactionService, TransactionService>();
-            services.AddSingleton<IClaimService, ClaimService>();
-            services.AddSingleton<IMerchantService, MerchantService>();
-            services.AddTransient<IUserResourceIdentityService, UserResourceIdentityService>();
-            services.AddTransient<IUserResourceIdentityService, UserResourceIdentityService>();
-
+            services.AddSingleton<IUserResourceIdentityService, UserResourceIdentityService>();
+            
             //repositories
-            services.AddTransient<IMerchantRepository, MerchantRepository>();
             services.AddTransient<ITransactionRepository, TransactionRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IClaimRepository, ClaimRepository>();
             services.AddTransient<IUserResourceIdentityRepository, UserResourceIdentityRepository>();
-            services.AddTransient<IResourceIdentityRepository, ResourceIdentityRepository>();
 
             //others
             services.AddSingleton<IAuthorizationHandler, ResourceAccessHandler>();

@@ -12,7 +12,7 @@ namespace UserProfiles.Data.Repository
     {
         private string _connectionString;
 
-        public ClaimRepository() => _connectionString = "Server=.;Database=Hub.Identity;Trusted_Connection=True;";
+        public ClaimRepository() => _connectionString = "Server=.;Database=Hub;Trusted_Connection=True;";
 
         public IDbConnection Connection => new SqlConnection(_connectionString);
 
@@ -20,7 +20,7 @@ namespace UserProfiles.Data.Repository
         {
             using (IDbConnection dbConnection = Connection)
             {
-                string sQuery = @"insert into [dbo].[Claims] ([Type], [Value]) values (@Type, @Value)";
+                string sQuery = @"insert into [dbo].[Claim] ([Type], [Value]) values (@Type, @Value)";
 
                 dbConnection.Open();
 
@@ -32,7 +32,7 @@ namespace UserProfiles.Data.Repository
         {
             using (IDbConnection dbConnection = Connection)
             {
-                string sQuery = @"update [dbo].[Claims] set [Type] = @Type, [Value] = @Value where Id = @Id";
+                string sQuery = @"update [dbo].[Claim] set [Type] = @Type, [Value] = @Value where Id = @Id";
 
                 dbConnection.Open();
 
@@ -44,7 +44,7 @@ namespace UserProfiles.Data.Repository
         {
             using (IDbConnection dbConnection = Connection)
             {
-                string sQuery = @"select [Id], [Type], [Value] from [dbo].[Claims]";
+                string sQuery = @"select [Id], [Type], [Value] from [dbo].[Claim]";
 
                 dbConnection.Open();
 
@@ -58,7 +58,7 @@ namespace UserProfiles.Data.Repository
         {
             using (IDbConnection dbConnection = Connection)
             {
-                string sQuery = @"select [Id], [Type], [Value] from [dbo].[Claims] where Id = @Id";
+                string sQuery = @"select [Id], [Type], [Value] from [dbo].[Claim] where Id = @Id";
 
                 dbConnection.Open();
 

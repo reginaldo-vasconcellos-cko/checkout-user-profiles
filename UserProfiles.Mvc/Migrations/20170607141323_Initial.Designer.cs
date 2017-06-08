@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace UserProfiles.Api.Migrations
+namespace UserProfiles.Mvc.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20170515113904_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20170607141323_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

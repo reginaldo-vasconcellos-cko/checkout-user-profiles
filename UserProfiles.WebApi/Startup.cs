@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using UserProfiles.Api.Migrations;
+using System.Net;
 using UserProfiles.Security.Middlewares;
 using UserProfiles.Security.Requirements;
 
@@ -26,21 +25,18 @@ namespace UserProfiles.WebApi
             Configuration = builder.Build();
 
             ConnectionString = Configuration.GetConnectionString("Hub");
-            IdentityConnectionString = Configuration.GetConnectionString("Identity");
         }
 
         public IConfigurationRoot Configuration { get; }
 
         public static string ConnectionString { get; private set; }
 
-        public static string IdentityConnectionString { get; private set; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
             services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Identity"),
-                optionsBuilder => optionsBuilder.MigrationsAssembly("UserProfiles.Api")));
+                optionsBuilder => optionsBuilder.MigrationsAssembly("UserProfiles.WebApi")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityDbContext>()
@@ -87,8 +83,6 @@ namespace UserProfiles.WebApi
             app.UseAuthMiddleware();
             app.UseIdentity();
             app.UseMvcWithDefaultRoute();
-
-            IdentitySeedData.Initialize(app.ApplicationServices);
         }
     }
 }

@@ -14,14 +14,13 @@ namespace UserProfiles.Security.Middlewares
 
         private Dictionary<string, string> _apiKeys = new Dictionary<string, string>()
         {
-            {"super_admin", "admin@checkout.com"},
-            {"nike_admin", "admin@nike.com"},
-            {"adidas_admin", "admin@adidas.com"},
-            {"nike_shoes_user", "user-shoes@nike.com"},
-            {"nike_accessories_user", "user-accessories@nike.com"},
-            {"adidas_user", "user@adidas.com"},
-            {"sales_user", "sales@checkout.com"},
-            {"test_user", "finaltestuser"}
+            {"super_admin", "checkout.admin"},
+            {"nike_admin", "nike.admin"},
+            {"adidas_admin", "adidas.admin"},
+            {"nike_shoes_user", "nikeshoes.user"},
+            {"nike_accessories_user", "nikeacessories.user"},
+            {"adidas_user", "adidas.user"},
+            {"sales_user", "checkout.sales"}
         };
 
         public AuthMiddleware(RequestDelegate nextDelegate, 
@@ -44,6 +43,12 @@ namespace UserProfiles.Security.Middlewares
             }
 
             var claims = await _userService.GetClaimsByUserNameAsync(userName);
+
+            if (claims == null)
+            {
+                context.Response.StatusCode = 401;
+                return;
+            }
 
             claims.Add(new Claim(ClaimTypes.Name, userName));
 

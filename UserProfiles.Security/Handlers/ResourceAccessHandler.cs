@@ -30,8 +30,12 @@ namespace UserProfiles.Security.Handlers
                 IdentityId = requirement.Id
             };
 
-            if (_userResouceIdentityService.VerifyUserResouceIdentityPermission(resourcePermission))
+            var flag = _userResouceIdentityService.VerifyUserResouceIdentityPermission(resourcePermission);
+
+            if (flag)
                 context.Succeed(requirement);
+            else
+                context.Fail();
         }
     }
 }

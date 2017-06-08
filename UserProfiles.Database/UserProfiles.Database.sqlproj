@@ -71,6 +71,7 @@
     <Build Include="Procedures\VerifyUserResouceIdentityPermission.sql" />
     <Build Include="Procedures\InsertUserResouceIdentity.sql" />
     <Build Include="Tables\Transaction.sql" />
+    <Build Include="Tables\Claim.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="UserProfiles.Database.publish.xml" />

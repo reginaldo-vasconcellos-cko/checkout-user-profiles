@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using UserProfiles.Mvc.Data;
+using UserProfiles.Mvc.Migrations;
 using UserProfiles.Security.Middlewares;
 using UserProfiles.Security.Requirements;
 
@@ -31,7 +31,7 @@ namespace UserProfiles.Mvc
         {
             // Add framework services.
             services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Identity"),
-                optionsBuilder => optionsBuilder.MigrationsAssembly("UserProfiles.Api")));
+                optionsBuilder => optionsBuilder.MigrationsAssembly("UserProfiles.Mvc")));
 
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
                 {
@@ -56,7 +56,7 @@ namespace UserProfiles.Mvc
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public async void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -71,6 +71,8 @@ namespace UserProfiles.Mvc
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            IdentitySeedData.Initialize(app.ApplicationServices);
+
             app.UseModifyHeaderMvcRequestMiddleware();
             app.UseAuthMiddleware();
             app.UseIdentity();
@@ -82,6 +84,8 @@ namespace UserProfiles.Mvc
                     name: "default",
                     template: "{controller=Users}/{action=Index}/{id?}");
             });
+
+            
         }
     }
 }

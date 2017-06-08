@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using UserProfiles.Api.Services;
 using UserProfiles.Security.Attributes;
 
-namespace UserProfiles.WebApi.Controllers.Hub
+namespace UserProfiles.WebApi.Controllers
 {
     [Produces("application/json")]
     public class IdentityController : Controller
@@ -17,7 +17,7 @@ namespace UserProfiles.WebApi.Controllers.Hub
 
         [HttpGet]
         [Route("api/identity/{id}")]
-        [RequirePermission("identity.list")]
+        [RequirePermission("identity.get")]
         public async Task<IActionResult> Get(int id)
         {
             return Ok(await _userService.GetDetailsByIdAsync(id));

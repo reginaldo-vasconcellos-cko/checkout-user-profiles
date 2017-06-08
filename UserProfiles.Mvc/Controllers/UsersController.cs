@@ -115,8 +115,8 @@ namespace UserProfiles.Mvc.Controllers
                 {
                     Name = user.Name,
                     Email = user.Email,
-                    Claims = user.SelectedClaims != null ? claims.Where(c => user.SelectedClaims.Contains(c.Value)).Select(c => c.Value).ToList() : null,
-                    Roles = user.SelectedRoles != null ? roles.Where(c => user.SelectedRoles.Contains(c.Name)).Select(c => c.Name).ToList() : null,
+                    Claims = user.SelectedClaims != null ? claims.Where(c => user.SelectedClaims.ToList().Contains(c.Value)).Select(c => c.Value).ToArray() : null,
+                    Roles = user.SelectedRoles != null ? roles.Where(c => user.SelectedRoles.ToList().Contains(c.Name)).Select(c => c.Name).ToArray() : null,
                     Resources = user.SelectedResources
                 };
 

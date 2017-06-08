@@ -8,7 +8,7 @@ namespace UserProfiles.Mvc.Models
         public int Id { get; set; }
 
         [Required]
-        [RegularExpression(@"^[a-zA-Z0-9]*$", ErrorMessage = "Invalid name, it can only contain letters and number")]
+        [RegularExpression(@"^[a-zA-Z0-9_.-]*$", ErrorMessage = "Invalid name, it can only contain letters and number")]
         public string Name { get; set; }
 
         [Required]

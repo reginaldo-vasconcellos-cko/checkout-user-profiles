@@ -37,7 +37,6 @@ insert into [dbo].[ResourceIdentity] ([Id], [IdentityType], [IdentityId]) values
 go
 insert into [dbo].[ResourceIdentity] ([Id], [IdentityType], [IdentityId]) values (6, 2, 4);
 
-
 SET IDENTITY_INSERT [dbo].[ResourceIdentity] OFF
 
 -- [User] --
@@ -61,6 +60,7 @@ go
 insert into [dbo].[UserResourceIdentity] ([UserId], [ResourceIdentityId]) values (1, 5);
 go 
 insert into [dbo].[UserResourceIdentity] ([UserId], [ResourceIdentityId]) values (1, 6);
+
 
 -- [Transaction] -- 
 go
@@ -88,41 +88,41 @@ insert into [dbo].[Transaction] ([MerchantId], [BusinessId], [TransactionDate], 
 go
 insert into [dbo].[Transaction] ([MerchantId], [BusinessId], [TransactionDate], [Amount], [Currency]) values (2, 4, '2017-03-20 00:00:00', 150, 'EUR');
 
--- [Claims] --
+-- [Claim] --
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'claim.list');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'claim.list');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'claim.details');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'claim.details');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'claim.create');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'claim.create');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'claim.edit');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'claim.edit');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'role.list');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'role.list');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'role.details');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'role.details');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'role.create');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'role.create');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'role.edit');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'role.edit');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'user.list');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'user.list');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'user.details');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'user.details');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'user.create');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'user.create');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'user.edit');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'user.edit');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'identity.list');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'identity.get');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'identity.getRoles');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'identity.getRoles');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'identity.getPermissions');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'identity.getPermissions');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'transaction.list');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'transaction.list');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'transaction.getByMerchant');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'transaction.getByMerchant');
 go
-insert into [Hub.Identity].[dbo].[Claims] ([Type], [Value]) values ('feature', 'transaction.getByBusiness');
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'transaction.getByBusiness');
 

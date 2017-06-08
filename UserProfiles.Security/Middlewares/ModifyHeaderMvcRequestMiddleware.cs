@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using UserProfiles.Api.Services;
 
 namespace UserProfiles.Security.Middlewares
 {

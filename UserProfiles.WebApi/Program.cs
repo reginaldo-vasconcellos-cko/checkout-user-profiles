@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
-using System.IO;
-using UserProfiles.WebApi;
 
-namespace UserProfiles.Api
+namespace UserProfiles.WebApi
 {
     public class Program
     {

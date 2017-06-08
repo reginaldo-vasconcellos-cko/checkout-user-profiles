@@ -39,7 +39,7 @@ namespace UserProfiles.Api.Services
                 var newUser = new IdentityUser
                 {
                     UserName = request.Name,
-                    Email = request.Email
+                    Email = request.Email, 
                 };
 
                 //create the identity user 
@@ -52,7 +52,7 @@ namespace UserProfiles.Api.Services
 
                 if (request.Roles != null)
                 {
-                    await request.Roles.ForEachAsync(async role =>
+                    await request.Roles.ToList().ForEachAsync(async role =>
                     {
                         if (await _roleManager.RoleExistsAsync(role))
                             await _userManager.AddToRoleAsync(user, role);
@@ -61,7 +61,7 @@ namespace UserProfiles.Api.Services
 
                 if (request.Claims != null)
                 {
-                    await request.Claims.ForEachAsync(async claim =>
+                    await request.Claims.ToList().ForEachAsync(async claim =>
                     {
                         await _userManager.AddClaimAsync(user, new Claim("feature", claim));
                     });
@@ -172,6 +172,9 @@ namespace UserProfiles.Api.Services
         public async Task<List<Claim>> GetClaimsByUserNameAsync(string userName)
         {
             var userIdentity = await _userManager.FindByNameAsync(userName);
+
+            if (userIdentity == null)
+                return null;
 
             return await GetClaimsByUserIdentity(userIdentity);
         }
