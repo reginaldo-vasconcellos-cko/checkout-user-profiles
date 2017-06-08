@@ -37,7 +37,6 @@ insert into [dbo].[ResourceIdentity] ([Id], [IdentityType], [IdentityId]) values
 go
 insert into [dbo].[ResourceIdentity] ([Id], [IdentityType], [IdentityId]) values (6, 2, 4);
 
-
 SET IDENTITY_INSERT [dbo].[ResourceIdentity] OFF
 
 -- [User] --
@@ -61,6 +60,7 @@ go
 insert into [dbo].[UserResourceIdentity] ([UserId], [ResourceIdentityId]) values (1, 5);
 go 
 insert into [dbo].[UserResourceIdentity] ([UserId], [ResourceIdentityId]) values (1, 6);
+
 
 -- [Transaction] -- 
 go
@@ -88,4 +88,41 @@ insert into [dbo].[Transaction] ([MerchantId], [BusinessId], [TransactionDate], 
 go
 insert into [dbo].[Transaction] ([MerchantId], [BusinessId], [TransactionDate], [Amount], [Currency]) values (2, 4, '2017-03-20 00:00:00', 150, 'EUR');
 
+-- [Claim] --
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'claim.list');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'claim.details');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'claim.create');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'claim.edit');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'role.list');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'role.details');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'role.create');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'role.edit');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'user.list');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'user.details');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'user.create');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'user.edit');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'identity.get');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'identity.getRoles');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'identity.getPermissions');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'transaction.list');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'transaction.getByMerchant');
+go
+insert into [dbo].[Claim] ([Type], [Value]) values ('feature', 'transaction.getByBusiness');
 

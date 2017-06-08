@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using UserProfiles.Api.Models.Entities;
-using UserProfiles.Api.Models.Requests;
-using UserProfiles.Api.Repository;
+using UserProfiles.Common.Models.Entities;
+using UserProfiles.Common.Models.Requests;
+using UserProfiles.Data.Repository;
 
 namespace UserProfiles.Api.Services
 {

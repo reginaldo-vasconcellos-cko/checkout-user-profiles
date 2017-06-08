@@ -1,0 +1,50 @@
+@using System.Linq
+@using UserProfiles.Common.Models.Entities
+@using UserProfiles.Mvc.Models
+@model Role
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Role</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.SelectedClaims, "Claims")
+    </div>
+
+    <div class="editor-field">
+        <ul>
+            @foreach (Claim claim in ViewBag.PossibleClaims)
+            {
+                <li>                        
+                    @if (Model.SelectedClaims.Select(e => e).Any(e => e == claim.Value))
+                    {
+                        <input type="checkbox" name="SelectedClaims" value="@claim.Value" readonly="readonly" disabled="disabled" checked="checked" />
+                    } 
+                    else
+                    {
+                        <input type="checkbox" name="SelectedClaims" value="@claim.Value" readonly="readonly" disabled="disabled" />
+                    }
+                    @claim.Value
+                </li>
+            }
+            @Html.ValidationMessageFor(model => model.SelectedClaims)
+        </ul>
+    </div>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-name="@Model.Name">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
